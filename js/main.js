@@ -55,7 +55,7 @@ const addNewProductToDatabase = () => {
         alert("El producto ya ha sido dado de alta en al base de datos");
     }
     else{
-        const newProduct = new Product[name, price];
+        const newProduct = new Product(name, price);
         products.push(newProduct);
         alert("El producto ha sido dado de alta correctamente");
     }

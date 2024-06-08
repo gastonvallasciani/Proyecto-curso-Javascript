@@ -1,12 +1,32 @@
+//-------------------------------------------------------------------------------
 // E-commerce
+// Clases
+class Product{
+    static id = 0;
+    constructor(name, price){
+        this.name = name;
+        this.price = price;
+        this.id = Product.id++;
+    }
+}
 
+class Login{
+    static id = 0;
+    constructor(user, password){
+        this.user = user;
+        this.password = password;
+        this.id = Login.id++;
+    }
+}
+//-------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
 // Variables
 // Productos disponibles para comprar - Vector dummy para hacer pruebas
-const products = [
-    {id: 1, name: "Producto 1", price: 10.00},
-    {id: 2, name: "Producto 2", price: 20.00},
-    {id: 3, name: "Producto 3", price: 30.00},
-];    
+const product1 = new Product("Producto 1", 10.00);
+const product2 = new Product("Producto 2", 20.00);
+const product3 = new Product("Producto 3", 30.00);
+
+const products = [product1, product2, product3];    
 //let products = [];    
 
 // Carrito de compras
@@ -15,32 +35,35 @@ let costoTotalCarrito = 0;
 
 // Usarios y contrasenias
 // El usuario administrador permite modificar la base de datos de productos
-let userAdmin = "admin";
-let passwordAdmin = "1234";
+const adminLogin = new Login("admin", "1234");
 // El usuario cliente permite acceder a la compra
-let userClient = "client";
-let passwordClient = "1234";
-
+const clientLogin = new Login("client", "1234");
+//-------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
 // Funciones
 // Funciones para manejo de base de datos de productos
 const showDatabaseProducts = () => {
-    console.log("Base de datos de productos:")
+    console.log("Base de datos de productos:");
     console.table(products);
 }
-
-const addNewProductToDatabase = (id, name, price) => {
-    const product = products.find(p =>p.id === id);
+//-------------------------------------------------------------------------------
+const addNewProductToDatabase = () => {
+    let name = prompt("Ingresar NOMBRE de producto");
+    let price = prompt("Ingresar PRECIO de producto");
+    const product = products.find(p =>p.name === name);
     if(product){
-        alert("El producto ya ha sido dado de alta en al base de datos")
+        alert("El producto ya ha sido dado de alta en al base de datos");
     }
     else{
-        products.push({ id: parseInt(id, 10), name: name, price: parseInt(price, 10) });
+        const newProduct = new Product[name, price];
+        products.push(newProduct);
         alert("El producto ha sido dado de alta correctamente");
     }
     showDatabaseProducts();
 }
-
-const removeProductFromDatabase = (name) => {
+//-------------------------------------------------------------------------------
+const removeProductFromDatabase = () => {
+    let name = prompt("Ingresar NOMBRE de producto que desea borrar");
     const index = products.findIndex(p =>p.name == name);
     if (index !== -1){
         products.splice(index, 1);
@@ -51,15 +74,16 @@ const removeProductFromDatabase = (name) => {
     }
     showDatabaseProducts();
 }
-
+//-------------------------------------------------------------------------------
 // Funciones para manejo de carrito
 const showCart = () => {
-    console.log("Carrito de compras:")
+    console.log("Carrito de compras:");
     console.table(cart);
     console.log("El costo total del carrito de compras es: " + costoTotalCarrito + " " + "ARS");
 }
-
-const addProductToCart = (productName) => {
+//-------------------------------------------------------------------------------
+const addProductToCart = () => {
+    let productName = prompt("Ingresar el NOMBRE del producto que desea agregar al carrito de compras");
     const product = products.find(p => p.name === productName);
     if (product) {
         cart.push(product);
@@ -69,8 +93,9 @@ const addProductToCart = (productName) => {
     }
     showCart();
 }
-
-const removeProductFromCart = (productName) => {
+//-------------------------------------------------------------------------------
+const removeProductFromCart = () => {
+    let productName = prompt("Ingresar NOMBRE de producto que desea borrar");
     const index = cart.findIndex(p =>p.name == productName);
     if (index !== -1){
         cart.splice(index, 1);
@@ -82,12 +107,13 @@ const removeProductFromCart = (productName) => {
     }
     showCart();
 }
-
+//-------------------------------------------------------------------------------
 // Funciones de calculo
 const calculateCartTotalCost = () => {
     return cart.reduce((total, product) => total + product.price, 0);
 }
-
+//-------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
 // Simulador: gestión de base de datos de productos + gestión de compra 
 do{
     console.log("Menu");
@@ -99,7 +125,7 @@ do{
         let user = prompt("Ingrese el usuario:");
         let password = prompt("Ingrese la contraseña de 4 caracteres:");
 
-        if((user === userAdmin) && (password === passwordAdmin)){
+        if((user === adminLogin.user) && (password === adminLogin.password)){
             console.log("ingreso de usuario nivel ADMINISTRADOR aceptado");
             do{
                 console.log("Menu");
@@ -108,23 +134,24 @@ do{
                 console.log("3- Mostrar lista de produtos");
                 console.log("4- Finalizar");
                 accion = prompt("Ingrese el número de la acción que desea llevar a cabo");
-
-                if(accion == 1){
-                    id = prompt("Ingresar ID de producto");
-                    nombre = prompt("Ingresar NOMBRE de producto");
-                    precio = prompt("Ingresar PRECIO de producto");
-                    addNewProductToDatabase(id, nombre, precio);
+                switch(parseInt(accion))
+                {
+                    case 1:
+                        addNewProductToDatabase();
+                        break;
+                    case 2:
+                        removeProductFromDatabase();
+                        break;
+                    case 3:
+                        showDatabaseProducts();
+                        break;
+                    default:
+                        break;
                 }
-                else if(accion == 2){
-                    nombre = prompt("Ingresar NOMBRE de producto que desea borrar");
-                    removeProductFromDatabase(nombre);
-                }
-                else if(accion == 3){
-                    showDatabaseProducts();
-                }
+                
             }while(accion != 4);
         }
-        else if((user === userClient) && (password === passwordClient))
+        else if((user === clientLogin.user) && (password === clientLogin.password))
         {
             console.log("ingreso de usuario nivel CLIENTE aceptado");
             do{
@@ -136,23 +163,24 @@ do{
                 console.log("5- Finalizar compra");
                 accion = prompt("Ingrese el número de la acción que desea llevar a cabo");
                 
-                if(accion == 1){
-                    showDatabaseProducts();
-                }
-                if(accion == 2){
-                    nombre = prompt("Ingresar el NOMBRE del producto que desea agregar al carrito de compras");
-                    addProductToCart(nombre);
-                }
-                else if(accion == 3){
-                    nombre = prompt("Ingresar NOMBRE de producto que desea borrar");
-                    removeProductFromCart(nombre);
-                }
-                else if(accion == 4){
-                    showCart();
-                }
-                else if(accion == 5){
-                    console.log("Gracias por su compra!");
-                    showCart();
+                switch(parseInt(accion))
+                {
+                    case 1:
+                        showDatabaseProducts();
+                        break;
+                    case 2:
+                        addProductToCart();
+                        break;
+                    case 3:
+                        removeProductFromCart();
+                        break;
+                    case 4:
+                        showCart();
+                        break;
+                    case 5:
+                        console.log("Gracias por su compra!");
+                        showCart();
+                        break;
                 }
             }while(accion != 5);
         }
@@ -165,4 +193,5 @@ do{
         alert("Usted ha salido correctamente");
     }
 }while(accion != 2); 
+//-------------------------------------------------------------------------------
 

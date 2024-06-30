@@ -19,6 +19,71 @@ class Login{
     }
 }
 //-------------------------------------------------------------------------------
+class Cart{
+    constructor(){
+        this.items = this.getCartFromLocalStorage();
+        this.totalCost = this.calculateCartTotalCost();
+    }
+
+    // Metodos para gestion en localstorage
+    // Metodo para guardar el carrito en localStorage
+    saveCartInLocalStorage(){
+        let cartJSON = JSON.stringify(this.items);
+        localStorage.setItem('cart', cartJSON);
+    };
+
+    // Metodo para recuperar el carrito de localStorage
+    getCartFromLocalStorage(){
+        let cartJSON = localStorage.getItem('cart');
+        return cartJSON ? JSON.parse(cartJSON) : [];
+    };
+
+    // Metodo para borrar el carrito
+    clearCartInLocalStorage(){
+        localStorage.removeItem('cart');
+    };
+
+    calculateCartTotalCost(){
+        return this.items.reduce((total, product) => total + product.price, 0);
+    }
+
+    // Metodos para manejo de carrito
+    showCart(){
+        console.log("Carrito de compras:");
+        console.table(this.items);
+        console.log("El costo total del carrito de compras es: " + this.totalCost + " " + "ARS");
+    }
+
+    addProductToCart(){
+        let productName = prompt("Ingresar el NOMBRE del producto que desea agregar al carrito de compras");
+        const product = products.find(p => p.name === productName);
+        if (product) {
+            this.items.push(product);
+            this.totalCost = this.calculateCartTotalCost();
+            this.saveCartInLocalStorage(this.items); // Guardo el carrito en localStorage
+        } else {
+            alert("El producto ingresado no existe en la base de datos de productos.");
+        }
+        this.showCart();
+    }
+    
+    removeProductFromCart(){
+        let productName = prompt("Ingresar NOMBRE de producto que desea borrar");
+        const index = this.items.findIndex(p =>p.name == productName);
+        if (index !== -1){
+            this.items.splice(index, 1);
+            alert("El producto ha sido borrado correctamente");
+            this.totalCost = calculateCartTotalCost();
+            saveCartInLocalStorage(this.items); // Actualizo el carrito en localStorage
+        }
+        else{
+            alert("El producto no se encontraba en la base de datos");
+        }
+        showCart();
+    }
+}
+
+//-------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------
 // Variables
 // Productos disponibles para comprar - Vector dummy para hacer pruebas
@@ -26,21 +91,19 @@ const product1 = new Product("Producto 1", 10.00);
 const product2 = new Product("Producto 2", 20.00);
 const product3 = new Product("Producto 3", 30.00);
 
-const products = [product1, product2, product3];    
-//let products = [];    
-
-// Carrito de compras
-let cart = [];
-let costoTotalCarrito = 0;
+const products = [product1, product2, product3];  
 
 // Usarios y contrasenias
 // El usuario administrador permite modificar la base de datos de productos
 const adminLogin = new Login("admin", "1234");
 // El usuario cliente permite acceder a la compra
 const clientLogin = new Login("client", "1234");
+// Carrito de compras
+let cart = new Cart(); // Inicializo el carrito desde localStorage
 //-------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------
 // Funciones
+//-------------------------------------------------------------------------------
 // Funciones para manejo de base de datos de productos
 const showDatabaseProducts = () => {
     console.log("Base de datos de productos:");
@@ -73,44 +136,6 @@ const removeProductFromDatabase = () => {
         alert("El producto no se encontraba en la base de datos");
     }
     showDatabaseProducts();
-}
-//-------------------------------------------------------------------------------
-// Funciones para manejo de carrito
-const showCart = () => {
-    console.log("Carrito de compras:");
-    console.table(cart);
-    console.log("El costo total del carrito de compras es: " + costoTotalCarrito + " " + "ARS");
-}
-//-------------------------------------------------------------------------------
-const addProductToCart = () => {
-    let productName = prompt("Ingresar el NOMBRE del producto que desea agregar al carrito de compras");
-    const product = products.find(p => p.name === productName);
-    if (product) {
-        cart.push(product);
-        costoTotalCarrito = calculateCartTotalCost();
-    } else {
-        alert("El producto ingresado no existe en la base de datos de productos.");
-    }
-    showCart();
-}
-//-------------------------------------------------------------------------------
-const removeProductFromCart = () => {
-    let productName = prompt("Ingresar NOMBRE de producto que desea borrar");
-    const index = cart.findIndex(p =>p.name == productName);
-    if (index !== -1){
-        cart.splice(index, 1);
-        alert("El producto ha sido borrado correctamente");
-        costoTotalCarrito = calculateCartTotalCost();
-    }
-    else{
-        alert("El producto no se encontraba en la base de datos");
-    }
-    showCart();
-}
-//-------------------------------------------------------------------------------
-// Funciones de calculo
-const calculateCartTotalCost = () => {
-    return cart.reduce((total, product) => total + product.price, 0);
 }
 //-------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------
@@ -169,17 +194,20 @@ do{
                         showDatabaseProducts();
                         break;
                     case 2:
-                        addProductToCart();
+                        cart.addProductToCart();
                         break;
                     case 3:
-                        removeProductFromCart();
+                        cart.removeProductFromCart();
                         break;
                     case 4:
-                        showCart();
+                        cart.showCart();
                         break;
                     case 5:
                         console.log("Gracias por su compra!");
-                        showCart();
+                        cart.showCart();
+                        cart.clearCartInLocalStorage();
+                        cart.items = []; // Reinicio el carrito en memoria
+                        cart.totalCost = 0; // Reinicio el costo del carrito en memoria
                         break;
                 }
             }while(accion != 5);
@@ -194,4 +222,3 @@ do{
     }
 }while(accion != 2); 
 //-------------------------------------------------------------------------------
-

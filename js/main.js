@@ -90,18 +90,18 @@ class Cart{
         this.showCart();
     }
     
-    removeProductFromCart(productId){
-        const index = this.items.findIndex(p =>p.id == productId);
-        if (index !== -1){
-            this.items.splice(index, 1);
+    removeProductFromCart(productId) {
+        const updateItems = this.items.filter(p => p.id !== productId);
+        if (updateItems.length !== this.items.length) {
+            this.items = updateItems;
             this.totalCost = this.calculateCartTotalCost();
             this.saveCartInLocalStorage(); // Actualizo el carrito en localStorage
-        }
-        else{
+        } else {
             alert("El producto no se encontraba en la base de datos");
         }
         this.showCart();
-    } 
+    }
+    
 }
 //-------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------

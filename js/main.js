@@ -23,6 +23,7 @@ class Cart{
     constructor(){
         this.items = this.getCartFromLocalStorage();
         this.totalCost = this.calculateCartTotalCost();
+        this.updateCartUI();
     }
 
     // Metodos para gestion en localstorage
@@ -41,10 +42,32 @@ class Cart{
     // Metodo para borrar el carrito
     clearCartInLocalStorage(){
         localStorage.removeItem('cart');
+        this.items = [];
+        this.totalCost = 0;
     };
 
     calculateCartTotalCost(){
         return this.items.reduce((total, product) => total + product.price, 0);
+    }
+
+    updateCartUI(){
+        let cartContainer = document.getElementById("cartHTML");
+        cartContainer.innerHTML = "";
+        this.items.forEach((product, index) => {
+            let productElement = document.createElement("div");
+            productElement.className = "cart-product";
+            productElement.innerHTML = `<h3>${product.name}</h3>
+                                        <h4>${product.price} ARS</h4>
+                                        <button onclick="cart.removeProductFromCart('${product.id}')">Remove</button>`;
+            cartContainer.appendChild(productElement);
+        });
+
+           // Update total cost in the UI
+           let totalCostHTML = document.getElementById("totalCostHTML");
+           if (totalCostHTML) {
+               totalCostHTML.innerHTML = `<span>Costo total: ${this.calculateCartTotalCost()} ARS</span>`;
+           }
+           else{ alert("csto total no existe")}
     }
 
     // Metodos para manejo de carrito
@@ -52,37 +75,34 @@ class Cart{
         console.log("Carrito de compras:");
         console.table(this.items);
         console.log("El costo total del carrito de compras es: " + this.totalCost + " " + "ARS");
+        this.updateCartUI();
     }
 
-    addProductToCart(){
-        let productName = prompt("Ingresar el NOMBRE del producto que desea agregar al carrito de compras");
+    addProductToCart(productName){
         const product = products.find(p => p.name === productName);
         if (product) {
             this.items.push(product);
             this.totalCost = this.calculateCartTotalCost();
-            this.saveCartInLocalStorage(this.items); // Guardo el carrito en localStorage
+            this.saveCartInLocalStorage(); // Guardo el carrito en localStorage
         } else {
             alert("El producto ingresado no existe en la base de datos de productos.");
         }
         this.showCart();
     }
     
-    removeProductFromCart(){
-        let productName = prompt("Ingresar NOMBRE de producto que desea borrar");
-        const index = this.items.findIndex(p =>p.name == productName);
+    removeProductFromCart(productId){
+        const index = this.items.findIndex(p =>p.id == productId);
         if (index !== -1){
             this.items.splice(index, 1);
-            alert("El producto ha sido borrado correctamente");
-            this.totalCost = calculateCartTotalCost();
-            saveCartInLocalStorage(this.items); // Actualizo el carrito en localStorage
+            this.totalCost = this.calculateCartTotalCost();
+            this.saveCartInLocalStorage(); // Actualizo el carrito en localStorage
         }
         else{
             alert("El producto no se encontraba en la base de datos");
         }
-        showCart();
-    }
+        this.showCart();
+    } 
 }
-
 //-------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------
 // Variables
@@ -93,17 +113,37 @@ const product3 = new Product("Producto 3", 30.00);
 
 const products = [product1, product2, product3];  
 
-// Usarios y contrasenias
-// El usuario administrador permite modificar la base de datos de productos
-const adminLogin = new Login("admin", "1234");
-// El usuario cliente permite acceder a la compra
-const clientLogin = new Login("client", "1234");
 // Carrito de compras
 let cart = new Cart(); // Inicializo el carrito desde localStorage
 //-------------------------------------------------------------------------------
+// Generacion dinamica de muestra de productos en el html
+let prod = document.getElementById("productsHTML");
+products.forEach(products => {
+    let contenedor = document.createElement("div");
+    contenedor.className = "card";
+    contenedor.innerHTML = `<h3>${products.name}</h3>
+                            <h4>Precio: ${products.price} </h4>
+                            <button id="add-to-cart-button-${products.id}"> Agregar al carrito </button>`
+                            prod.appendChild(contenedor);
+})
+//-------------------------------------------------------------------------------
+// Eventos
+// Funcion para manejar los eventos de click para los botones que se generaron de forma dinamica
+products.forEach(products => {
+    let button = document.getElementById(`add-to-cart-button-${products.id}`);
+    button.onclick = () => {
+        cart.addProductToCart(`${products.name}`);
+    }
+});
+
+let endPurchaseButton = document.getElementById("endPurchase");
+endPurchaseButton.onclick = () => {
+    cart.clearCartInLocalStorage();
+    cart.getCartFromLocalStorage();
+    cart.updateCartUI();
+}
 //-------------------------------------------------------------------------------
 // Funciones
-//-------------------------------------------------------------------------------
 // Funciones para manejo de base de datos de productos
 const showDatabaseProducts = () => {
     console.log("Base de datos de productos:");
@@ -139,86 +179,4 @@ const removeProductFromDatabase = () => {
 }
 //-------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------
-// Simulador: gestión de base de datos de productos + gestión de compra 
-do{
-    console.log("Menu");
-    console.log("1- Loguearse con usuario y contraseña");
-    console.log("2- Salir");
-    accion = prompt("Ingrese el número de la acción que desea llevar a cabo");
-
-    if(accion == 1){
-        let user = prompt("Ingrese el usuario:");
-        let password = prompt("Ingrese la contraseña de 4 caracteres:");
-
-        if((user === adminLogin.user) && (password === adminLogin.password)){
-            console.log("ingreso de usuario nivel ADMINISTRADOR aceptado");
-            do{
-                console.log("Menu");
-                console.log("1- Ingresar Producto");
-                console.log("2- Borrar Producto");
-                console.log("3- Mostrar lista de produtos");
-                console.log("4- Finalizar");
-                accion = prompt("Ingrese el número de la acción que desea llevar a cabo");
-                switch(parseInt(accion))
-                {
-                    case 1:
-                        addNewProductToDatabase();
-                        break;
-                    case 2:
-                        removeProductFromDatabase();
-                        break;
-                    case 3:
-                        showDatabaseProducts();
-                        break;
-                    default:
-                        break;
-                }
-                
-            }while(accion != 4);
-        }
-        else if((user === clientLogin.user) && (password === clientLogin.password))
-        {
-            console.log("ingreso de usuario nivel CLIENTE aceptado");
-            do{
-                console.log("Menu");
-                console.log("1- Mostrar lista de productos");
-                console.log("2- Agregar producto a carrito");
-                console.log("3- Borrar producto de carrito");
-                console.log("4- Mostrar lista de productos presentes en el carrito");
-                console.log("5- Finalizar compra");
-                accion = prompt("Ingrese el número de la acción que desea llevar a cabo");
-                
-                switch(parseInt(accion))
-                {
-                    case 1:
-                        showDatabaseProducts();
-                        break;
-                    case 2:
-                        cart.addProductToCart();
-                        break;
-                    case 3:
-                        cart.removeProductFromCart();
-                        break;
-                    case 4:
-                        cart.showCart();
-                        break;
-                    case 5:
-                        console.log("Gracias por su compra!");
-                        cart.showCart();
-                        cart.clearCartInLocalStorage();
-                        cart.items = []; // Reinicio el carrito en memoria
-                        cart.totalCost = 0; // Reinicio el costo del carrito en memoria
-                        break;
-                }
-            }while(accion != 5);
-        }
-        else
-        {
-            alert("El usuario o el password ingresado es incorrecto");
-        }
-    }
-    else if(accion == 2){
-        alert("Usted ha salido correctamente");
-    }
-}while(accion != 2); 
 //-------------------------------------------------------------------------------

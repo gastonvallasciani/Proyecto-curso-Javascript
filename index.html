@@ -4,41 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proyecto Javascript</title>
+    <link rel="stylesheet" href="./css/styles.css">
     <script defer src="./js/main.js"></script>
 </head>
 <body>
-    <h1>Poyecto Javascript - Gastón Vallasciani</h1>
-    <h2>Preentrega 1 para el curso de Javascript de CoderHouse</h2>
-    <h3>Simulador en Javascript para un e-commerce</h3>
-    <p>
-        Se muestran los diferentes datos y menús por consola.
-    </p>
-    <p>
-        Se ingresan datos mediante el uso de prompts.
-    </p>
-    <h2>Menu de inicio:</h2>
-    <p>
-        Al ingresar a la web:
-    </p>
-    <ul>
-        <li>1 - Loguearse con usuario y contraseña.</li>
-        <li>2 - Salir.</li>
-    </ul>
-    <h2>El simulador pide un login mediante usuario y contraseña.</h2>
-    <h3>Credenciales:</h3>
-    <p>
-        <strong>user:</strong> admin<br>
-        <strong>password:</strong> 1234
-    </p>
-    <p>
-        Para gestionar la base de datos de productos. Se simula una base de datos con un array. Esta sección permite hacer un CRUD con los productos del e-commerce.
-    </p>
-    <p>
-        <strong>user:</strong> client<br>
-        <strong>password:</strong> 1234
-    </p>
-    <p>
-        Para gestionar la compra del cliente. Se hace un CRUD con el carrito de compras y se puede visualizar el monto de compra total.
-    </p>
+    <div class="titleClass"><h1>Poyecto Javascript - Gastón Vallasciani</h1></div>
+    <h2 class="titleClass">Preentrega 2 para el curso de Javascript de CoderHouse</h2>
+
+    <div class="productContainer">
+        <h2>Productos</h2>
+        <div id="productsHTML" class="productsClass"></div>
+    </div>
+    
+    
+   
+    <div class="cartContainer">
+        <h2>Carrito de compras</h2>
+        <div id="cartHTML" class="cartClass"></div>
+        <div class="endpurchaseContainer">
+            <div id="totalCostHTML" class="totalCostClass"></div>
+            <button id="endPurchase" class="endPurchaseClass"> Finalizar compra </button>
+        </div>
+        
+    </div>
+    
+
 </body>
 </html>

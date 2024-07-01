@@ -7,6 +7,7 @@ class Product{
         this.name = name;
         this.price = price;
         this.id = Product.id++;
+        this.uuid = crypto.randomUUID();
     }
 }
 
@@ -61,17 +62,17 @@ class Cart{
             productElement.className = "cart-product";
             productElement.innerHTML = `<h3>${product.name}</h3>
                                         <h4>${product.price} ARS</h4>
-                                        <button id="removeProdFromCart-${product.id}">Remove</button>`;
+                                        <button id="${product.uuid}">Remove</button>`;
             cartContainer.appendChild(productElement);
 
-            let buttonremProd = document.getElementById(`removeProdFromCart-${product.id}`);
+            let buttonremProd = cartContainer.lastElementChild;
             if(buttonremProd)
             {
-                buttonremProd.onclick = () => {
+                buttonremProd.onclick = (event) => {
+                   // console.log({event});
                     this.removeProductFromCart(product.id);
                 };    
             }
-            
         });
         
 
@@ -80,7 +81,7 @@ class Cart{
         if (totalCostHTML) {
             totalCostHTML.innerHTML = `<span>Costo total: ${this.calculateCartTotalCost()} ARS</span>`;
         }
-        else{ alert("csto total no existe");}
+        //else{ alert("csto total no existe");}
 
         // update items count
         this.calculateCartTotalItems();
@@ -194,6 +195,20 @@ const removeProductFromDatabase = () => {
         alert("El producto no se encontraba en la base de datos");
     }
     showDatabaseProducts();
+}
+//-------------------------------------------------------------------------------
+let buttonCart = document.getElementById("cart_button");
+buttonCart.onclick= () => {
+    let buttonCartContainer = document.getElementById("cartContainerId");
+
+    if(buttonCartContainer.style.visibility == "hidden")
+    {
+        buttonCartContainer.style.visibility = "visible";   
+    }
+    else
+    {
+        buttonCartContainer.style.visibility = "hidden";
+    }
 }
 //-------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------

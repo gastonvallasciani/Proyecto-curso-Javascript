@@ -11,7 +11,7 @@
 
     <header>
         <div class="container">
-            <h1>Curso Javascript</h1>
+            <span class="strClass">Curso Javascript</span>
             <nav>
                 <ul>
                     <li><a href="#">Productos</a></li>
@@ -19,7 +19,7 @@
                     <li class="cart">
                         <a href="#">
                             <span id="cart-count">0</span>
-                            <img src="assets/images/carrito-de-compras.png" alt="Carrito de Compras">
+                            <img src="assets/images/carrito-de-compras.png" alt="Carrito de Compras" id="cart_button" class="cartIconClass">
                         </a>
                     </li>
                 </ul>
@@ -31,20 +31,18 @@
         <h2>Productos</h2>
         <div id="productsHTML" class="productsClass"></div>
     </div>
-    
-    
-   
-    <div class="cartContainer">
-        <h2>Carrito de compras</h2>
+
+    <div class="cartContainer" id="cartContainerId">
+        <span class="strCarrito">Carrito de compras</span>
         <div id="cartHTML" class="cartClass"></div>
         <div class="endpurchaseContainer">
             <div id="totalCostHTML" class="totalCostClass"></div>
             <button id="endPurchase" class="endPurchaseClass"> Finalizar compra </button>
         </div>
-        
     </div>
     <footer>
-
+        <span>Pre-entrega 2 - By Gaston Vallasciani</span>
+        <span>Versión: 1.0</span>
     </footer>
 
 </body>

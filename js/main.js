@@ -49,6 +49,9 @@ class Cart{
     calculateCartTotalCost(){
         return this.items.reduce((total, product) => total + product.price, 0);
     }
+    calculateCartTotalItems(){
+        document.getElementById('cart-count').innerText = this.items.length; 
+    }
 
     updateCartUI(){
         let cartContainer = document.getElementById("cartHTML");
@@ -67,7 +70,10 @@ class Cart{
            if (totalCostHTML) {
                totalCostHTML.innerHTML = `<span>Costo total: ${this.calculateCartTotalCost()} ARS</span>`;
            }
-           else{ alert("csto total no existe")}
+           else{ alert("csto total no existe");}
+
+           // update items count
+           this.calculateCartTotalItems();
     }
 
     // Metodos para manejo de carrito
@@ -89,18 +95,19 @@ class Cart{
         }
         this.showCart();
     }
-    
-    removeProductFromCart(productId) {
-        const updateItems = this.items.filter(p => p.id !== productId);
-        if (updateItems.length !== this.items.length) {
-            this.items = updateItems;
+
+    removeProductFromCart(productId){
+        const index = this.items.findIndex(p =>p.id == productId);
+        if (index !== -1){
+            this.items.splice(index, 1);
             this.totalCost = this.calculateCartTotalCost();
             this.saveCartInLocalStorage(); // Actualizo el carrito en localStorage
-        } else {
+        }
+        else{
             alert("El producto no se encontraba en la base de datos");
         }
         this.showCart();
-    }
+    } 
     
 }
 //-------------------------------------------------------------------------------
@@ -110,8 +117,9 @@ class Cart{
 const product1 = new Product("Producto 1", 10.00);
 const product2 = new Product("Producto 2", 20.00);
 const product3 = new Product("Producto 3", 30.00);
+const product4 = new Product("Producto 4", 30.00);
 
-const products = [product1, product2, product3];  
+const products = [product1, product2, product3, product4];  
 
 // Carrito de compras
 let cart = new Cart(); // Inicializo el carrito desde localStorage

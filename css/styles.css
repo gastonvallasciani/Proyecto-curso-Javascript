@@ -40,7 +40,64 @@ h2 {
 h3 {
     font-size: 2rem;
 }
+/* Header */
 
+header {
+    background-color: #f8f8f8;
+    padding: 20px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1 {
+    margin: 0;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+nav ul li {
+    display: flex;
+    align-items: center;
+    font-size: 1.8rem;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+nav ul li.cart {
+    position: relative;
+}
+
+nav ul li.cart img {
+    width: 3rem;
+    height: auto;
+}
+
+#cart-count {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: #333;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+}
 /* styles.css */
 .cart-product {
     padding: 3px;
@@ -81,6 +138,17 @@ h3 {
     padding: 2rem;
 }
 
+.productContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 1rem 0rem 1rem 0rem;
+}
+
 .cartClass{
     display: flex;
     flex-wrap: wrap;
@@ -92,8 +160,8 @@ h3 {
     display: flex;
     flex-direction: column;
     border: 1px solid #ddd;
-    padding: 20px;
-    margin: 10px;
+    padding: 2rem;
+    margin: 1rem;
     border-radius: 5px;
     background-color: #fff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -138,8 +206,8 @@ h3 {
 
 .cartContainer{
     border: 1px solid #ddd;
-    padding: 20px;
-    margin: 10px;
+    padding: 2rem;
+    margin: 1rem 0rem 1rem 0rem;
     border-radius: 5px;
     background-color: #fff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

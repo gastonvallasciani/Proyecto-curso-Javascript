@@ -56,24 +56,34 @@ class Cart{
     updateCartUI(){
         let cartContainer = document.getElementById("cartHTML");
         cartContainer.innerHTML = "";
-        this.items.forEach((product, index) => {
+        this.items.forEach((product) => {
             let productElement = document.createElement("div");
             productElement.className = "cart-product";
             productElement.innerHTML = `<h3>${product.name}</h3>
                                         <h4>${product.price} ARS</h4>
-                                        <button onclick="cart.removeProductFromCart('${product.id}')">Remove</button>`;
+                                        <button id="removeProdFromCart-${product.id}">Remove</button>`;
             cartContainer.appendChild(productElement);
+
+            let buttonremProd = document.getElementById(`removeProdFromCart-${product.id}`);
+            if(buttonremProd)
+            {
+                buttonremProd.onclick = () => {
+                    this.removeProductFromCart(product.id);
+                };    
+            }
+            
         });
+        
 
-           // Update total cost in the UI
-           let totalCostHTML = document.getElementById("totalCostHTML");
-           if (totalCostHTML) {
-               totalCostHTML.innerHTML = `<span>Costo total: ${this.calculateCartTotalCost()} ARS</span>`;
-           }
-           else{ alert("csto total no existe");}
+        // Update total cost in the UI
+        let totalCostHTML = document.getElementById("totalCostHTML");
+        if (totalCostHTML) {
+            totalCostHTML.innerHTML = `<span>Costo total: ${this.calculateCartTotalCost()} ARS</span>`;
+        }
+        else{ alert("csto total no existe");}
 
-           // update items count
-           this.calculateCartTotalItems();
+        // update items count
+        this.calculateCartTotalItems();
     }
 
     // Metodos para manejo de carrito
